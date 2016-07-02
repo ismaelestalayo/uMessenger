@@ -8,23 +8,25 @@ public final class ChatClientThread extends Thread{
     private ChatClient client = null;
     
     private DataInputStream dis = null;
+    public int userNumber;
     
     //CONSTRUCTOR///////////////////////////////////////////////////////////////
     public ChatClientThread(ChatClient cc, Socket ss) {
         client = cc;
         socket = ss;
-        open();
+        
+        openStream();
         start();
     }
     
     //METHODS///////////////////////////////////////////////////////////////////
-    public void open() {
+    public void openStream() {
         try {
             dis = new DataInputStream(socket.getInputStream() );
             
         } catch (IOException ioe) {
             System.out.println("Error getting input stream: " + ioe);
-            client.stop();
+            client.closeAll();
         }
     }
 
@@ -40,14 +42,21 @@ public final class ChatClientThread extends Thread{
 
     @Override
     public void run() {
+        try {
+            userNumber = dis.readInt();
+        } catch (IOException ex) {
+            System.out.println("ERROR READING USER NUMBER:\n" + ex);
+        }
+        
         while (true) {
             try {
-                client.handle(dis.readUTF() );
+                client.chatting(dis.readUTF() );
                 
             } catch (IOException ex) {
                 System.out.println("Listening error: " + ex);
-                client.stop();
+                client.closeAll();
             }
         }
     }
+    
 }
