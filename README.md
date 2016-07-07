@@ -1,7 +1,8 @@
 # uMessenger
-## Alpha 0.1 version
+## Alpha 0.2 version
 
-This is just a small project I'm currently working on after getting into Java programming in university. It's a small Messenger-like application designed to run from the command line, and works on the same LAN only (unless using NAT on the server side).
+Small Messenger-like application designed to run from the command line, and works on the same LAN only (unless using NAT on the server side).
+You can either download the full zip file, and compile it yourself, or download the two jar files and run it from the command line. I also uploaded two .cmd files that if placed in the same folder as the .jar files they will open in a new command windows.
 
 Right now my plans on what to implement are the following:
 
