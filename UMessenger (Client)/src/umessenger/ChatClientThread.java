@@ -8,7 +8,10 @@ public final class ChatClientThread extends Thread{
     private ChatClient client = null;
     
     private DataInputStream dis = null;
-    public int userNumber;
+    
+    public static final String C_RST = "\u001B[0m";
+    public static final String C_BLACK = "\u001B[30m";
+    public static final String C_RED = "\u001B[31m";
     
     //CONSTRUCTOR///////////////////////////////////////////////////////////////
     public ChatClientThread(ChatClient cc, Socket ss) {
@@ -29,7 +32,6 @@ public final class ChatClientThread extends Thread{
             client.closeAll();
         }
     }
-
     public void close() {
         try {
             if (dis != null)
@@ -42,21 +44,20 @@ public final class ChatClientThread extends Thread{
 
     @Override
     public void run() {
-        try {
-            userNumber = dis.readInt();
-        } catch (IOException ex) {
-            System.out.println("ERROR READING USER NUMBER:\n" + ex);
-        }
+        client.sendUserName();  //Sends your UserName
         
         while (true) {
             try {
                 client.chatting(dis.readUTF() );
                 
             } catch (IOException ex) {
-                System.out.println("Listening error: " + ex);
+                System.out.println(C_RED + "_________________________________________");
+                System.out.println("Listeningg error: " + ex + C_RST);
+                System.out.println("Press enter to close.");
                 client.closeAll();
             }
         }
     }
+    
     
 }
