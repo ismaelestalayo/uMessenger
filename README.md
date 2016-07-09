@@ -15,4 +15,7 @@ Right now my plans on what to implement are the following:
 - (More) Commands
 
 
-Feel free to suggest anything.
+Feel free to suggest anything:
+
+ * Email: ismael.em@outlook.com
+ * Twitter: [@isma_estalayo](https://twitter.com/isma_estalayo)
