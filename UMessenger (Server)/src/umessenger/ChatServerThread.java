@@ -71,10 +71,12 @@ public class ChatServerThread extends Thread {
             System.out.println("ERROR reading userName:\n" + ex);
         }
     }
+    
+    
     private void checkNewUser(){
         
         boolean newUser = true;
-        Files f = new Files("userList.txt");
+        UserListHandler f = new UserListHandler("userList.txt");
         
         f.openReadMode();
         String line = null;
@@ -100,6 +102,9 @@ public class ChatServerThread extends Thread {
     public String getUserName(){
         return userName;
     }
+    public String getUserIP(){
+        return socket.getInetAddress().getHostAddress();
+    }
     public void openStreams() throws IOException {
         dis = new DataInputStream(new BufferedInputStream(socket.getInputStream() ) );
         dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream() ) );
@@ -112,94 +117,5 @@ public class ChatServerThread extends Thread {
         if (dos != null)
             dos.close();
     }
-    
-    //**************************************************************************
-//    private void sendLong(long x){
-//        try{
-//            dos.writeLong(x);
-//            
-//        } catch(IOException ex){
-//            System.out.println("ERROR SENDING LONG.\n" + ex);
-//        }
-//    }
-//    private long receiveLong(){
-//        long x = 0;
-//        
-//        try {
-//            x = dis.readLong();
-//            
-//        } catch (IOException ex) {
-//            System.out.println("ERROR RECEVING LONG.\n" + ex);
-//        }
-//        
-//        return x;
-//    }
-//    public Array receiveArray(){
-//        System.out.println("> Preparing to receive array.");
-//        long dim = receiveLong();
-//        System.out.println("> Size of the file: " + dim);
-//        long segments = receiveLong();
-//        System.out.println("> Size of the segments: " + segments);
-//        
-//        int i = 0;
-//        Array b = new Array(dim);
-//        while( i < (dim/segments)){
-//            
-//            try {
-//                dis.read( b.returnArray(), i*(int)segments, (int)segments);
-//                
-//            } catch (IOException ex) {
-//                System.out.println("> ERROR RECIBIENDO ARRAY EN SEGMENTOS");
-//                System.out.println(ex);
-//            }
-//            
-//            System.out.println("    [" +(i*segments)+ "/" +dim+ "]" );
-//            i++;
-//        }
-//        
-//        try {
-//            dis.read( b.returnArray(), i*(int)segments, (int)(dim%segments) );
-//            System.out.println("    [" +(i*segments)+ "/" +dim+ "]" );
-//            
-//        } catch (IOException ex) {
-//            System.out.println("> ERROR RECIBIENDO EL ULTIMO SEGMENTO\n" + ex);
-//        }
-//        System.out.println("    [" +(dim)+ "/" +dim+ "]" );
-//        
-//        return b;
-//    }
-//    public void sendArray(String user, Array a, long segment){
-//        System.out.println("> Preparing to send the file from " + user);
-//        long dim = a.getDimension();
-//        System.out.println("> Size of the file: " + dim);
-//        sendLong(dim);
-//        System.out.println("> Size of the segments: " + segment);
-//        sendLong(segment);
-//        
-//        /*All the file except last segment 
-//        (Because it may be smaller than segment size)*/
-//        int i = 0;
-//        while(i < (dim/segment)){
-//            
-//            try {
-//                dos.write( a.returnArray(), i*(int)segment, (int)segment);
-//                
-//            } catch (IOException ex) {
-//                System.out.println("> ERROR SENDING ARRAY IN SEGMENTS");
-//                System.out.println(ex);
-//            }
-//            
-//            System.out.println("    [" +(i*segment)+ "/" +dim+ "]" );
-//            i++;
-//        }
-//        
-//        try {
-//            dos.write( a.returnArray(), i*(int)segment, (int)(dim%segment) );
-//            System.out.println("    [" +(i*segment)+ "/" +dim+ "]" );
-//            
-//        } catch (IOException ex) {
-//            System.out.println("> ERROR SENDING LAST SEGMENT\n" + ex);
-//        }
-//        System.out.println("    [" +(dim)+ "/" +dim+ "]" );
-//    }
+
 }
