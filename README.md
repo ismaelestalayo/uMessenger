@@ -19,6 +19,7 @@ Right now my plans on what to implement are the following:
 - ~~Usernames~~ with password
 - ~~Ability to send files~~
 - (More) Commands
+- Save logs from the server
 
 
 Feel free to suggest anything at:
