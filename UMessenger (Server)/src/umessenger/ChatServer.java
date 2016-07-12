@@ -76,7 +76,7 @@ public class ChatServer implements Runnable {
 
     public synchronized void broadcast(String userName, int ID, String msg){
         
-        if (msg.equals("/fin") ){
+        if(msg.equals("/fin") ){
             for (int i = 0; i < clientCount; i++)
                 clients[i].sendMsg("FIN" +"º"+ userName +"º"+ "doesn't mind");
             
@@ -88,6 +88,48 @@ public class ChatServer implements Runnable {
                 if(clients[i].getUserName().equals(userName) )
                     clients[i].sendMsg("INFO" +"º"+ userName +"º"+ helpMessage() );
             
+        }
+        
+        else if(msg.equals("/IPs")){
+            String userList = "";
+            
+            for (int i = 0; i < clientCount; i++)
+                userList += clients[i].getUserName() + " - " +clients[i].getUserIP()+ "\n";
+            
+            for (int i = 0; i < clientCount; i++)
+                if(clients[i].getUserName().equals(userName) )
+                    clients[i].sendMsg("INFO" +"º"+ userName +"º"+ userList );
+        }
+        
+        else if(msg.startsWith("/send") ){
+            String target = msg.split("/send")[1];
+            String targetIP = "";
+            boolean sent = false;
+            for(int i = 0; i < clientCount; i++){
+                if(clients[i].getUserName().equals(target)){
+                    targetIP = clients[i].getUserIP();
+                    sent = true;
+                }
+            }
+            //If there was an user with that name:
+            if(sent){
+                for (int i = 0; i < clientCount; i++){
+                    if(clients[i].getUserName().equals(userName)){
+                        clients[i].sendMsg("FILE" +"º"+ userName +"º"+ targetIP);
+                    }
+                    else if(clients[i].getUserName().equals(target) ){
+                        clients[i].sendMsg("FILE" +"º"+ userName +"º"+ "doesn't mind" );
+                    }
+                }
+            }
+            else{
+                for (int i = 0; i < clientCount; i++){
+                    if(clients[i].getUserName().equals(userName)){
+                        clients[i].sendMsg("INFO" +"º"+ userName +"º"+ "User " 
+                                +target+ " wasnt found.");
+                    }
+                }
+            }
         }
         
         else if(msg.equals("/users") ){
@@ -124,31 +166,8 @@ public class ChatServer implements Runnable {
             }
         }
         
-//        else if(msg.equals("/attach") ){
-//            for (int i = 0; i < clientCount; i++) {
-//                clients[i].sendMsg("FILE" +"º"+ userName +"º"+ "doesn't mind" );
-//            }
-//        }
-//        
-//        else if(msg.equals("SEND") ){
-//            Array a = null;
-//            for (int i = 0; i < clientCount; i++) {
-//                if(clients[i].getName().equals(userName) ){
-//                    System.out.println("ENCAJA EL NOMBRE!");
-//                    //a = clients[i].receiveArray();
-//                }
-//            }
-//            for (int i = 0; i < clientCount; i++) {
-//                if(clients[i].getUserName().equals(userName) ){
-//                    //nothing
-//                }
-//                else{
-//                    //clients[i].sendArray(userName, clients[0].receiveArray(), 200);
-//                }
-//            }
-//        }
-        
-        else {  //Normal messages:
+        //Normal messages:
+        else {
             for (int i = 0; i < clientCount; i++) {
                 clients[i].sendMsg("CHAT" +"º"+ userName +"º"+ msg);
             }
@@ -207,12 +226,12 @@ public class ChatServer implements Runnable {
     
     private String helpMessage(){
         return 
-                  "/attach - Send a file (Coming soon)\n"
-                + "/fin - Ends your current session.\n"
+                  "/fin - Ends your current session.\n"
                 + "/help - This one\n"
+                + "/IPs - Prints a list of users and their IPs\n"
+                + "/sendUser - Send a file to the specified user.\n"
                 + "/users - Prints a list of online users\n";
     }
-    
 }
 
 

@@ -57,7 +57,6 @@ public final class ChatClientThread extends Thread{
                 client.closeAll();
             }
         }
-    }
-    
-    
+    } 
 }
+

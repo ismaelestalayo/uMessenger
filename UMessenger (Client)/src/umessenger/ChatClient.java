@@ -26,7 +26,7 @@ public final class ChatClient implements Runnable{
     private static Scanner keyboard = null;
     private String userName = "";
     
-    //CONSTRUCTOR///////////////////////////////////////////////////////////////
+//////CONSTRUCTOR///////////////////////////////////////////////////////////////
     public ChatClient(String dir, int port) {
         
         System.out.print("Choose an user name: " + C_RST);
@@ -52,13 +52,16 @@ public final class ChatClient implements Runnable{
     //MAIN//////////////////////////////////////////////////////////////////////
     public static void main(String args[]) {
         ChatClient client = null;
+        
+        System.out.print(C_GREEN + "(If you are the server, put your IP, not 'localhost')\n" + C_RST);
         System.out.print(C_GREEN + "Insert the IP of the server: " + C_RST);
         keyboard = new Scanner(System.in);
         String dir = keyboard.nextLine();
+        
         client = new ChatClient(dir, 1234);
     }
     
-    //METHODS///////////////////////////////////////////////////////////////////
+//////METHODS///////////////////////////////////////////////////////////////////
     private String welcomeMessage(){
         return "\n"
                 + " _   ____  ___                                         \n"
@@ -69,12 +72,14 @@ public final class ChatClient implements Runnable{
                 + " \\___/\\_|  |_/\\___||___/___/\\___|_| |_|\\__, |\\___|_|   \n"
                 + "                                        __/ |          \n"
                 + "                                       |___/           \n"
-                + "Welcome to UMessenger Alpha 0.2 (by Ismael Estalayo).\n\n"
-                + "This is a messenger app made with Sockets in Java designed to run\n"
-                + "in the command line and on the same LAN. Use "
-                + C_YELLOW+"/help"+C_GREEN+" for available\n"
-                + "commands and "+ C_YELLOW+"/fin"+C_GREEN+" for ending the session.\n\n"
-                + "More info and suggestions at www.GitHub.com/IsmaelEstalayo\n";
+                + "Welcome to UMessenger Beta 1.0 (by Ismael Estalayo).\n"
+                + "\n"
+                + "This is a small messenger-like app made with Sockets in Java designed to\n"
+                + "run in the command line and on the same LAN (or using NAT on a server). \n"
+                + "Use " + C_YELLOW+"/help"+C_GREEN+" for available commands and "
+                + C_YELLOW+"/fin"+C_GREEN+" for ending the session.\n"
+                + "\n"
+                + "Full info and suggestions at www.GitHub.com/IsmaelEstalayo\n";
     }
     
     public void start() throws IOException {
@@ -124,34 +129,29 @@ public final class ChatClient implements Runnable{
                 break;
               
             case "FIN":
+                //For the user that requested it, end it's session
                 if(user.equals(userName) ){
                     System.out.println("_________________________________________");
                     System.out.print("Good bye. Press RETURN to exit...");
                     closeAll();
                 }
+                //Rest of users, message of dissconect
                 else{
-                    System.out.println(C_RED + ">User " +user+ 
-                            " dissconected." + C_RST);
+                    System.out.println(C_RED + "User " +user+ " dissconected." + C_RST);
                 }
                 break;
-                
+            
             case "FILE":
                 if(user.equals(userName) ){
-                    Files f = new Files();
-                    String aux = f.getFileName();
-                    System.out.println(C_GREEN+"File to send: " + aux + C_RST);
-                    sendString(aux);
-                    sendString("SEND");
+                    System.out.println(C_GREEN + "Opening subprocess for sending a file..");
+                    FileSender sender = new FileSender(msg);
+                    System.out.print(C_RST);
                     
-                    sendArray(userName, f.fileToArray(), 200);
-                    System.out.println(C_GREEN + "File sent!" + C_RST);
-                }
-                else{
-                    String zz = receiveString().split("º")[2];
-                    System.out.println(C_GREEN+"File to receive: " + zz + C_RST);
+                } else{
+                    System.out.println(C_GREEN + "Opening subprocess for receiving a file..");
+                    FileReceiver receiver = new FileReceiver();
+                    System.out.print(C_RST);
                     
-                    Files f = new Files(zz);
-//                    f.arrayToFile(receiveArray() );
                 }
                 break;
         }
@@ -186,64 +186,55 @@ public final class ChatClient implements Runnable{
             System.out.println("Error sending UTF:\n" + ex);
         }
     }
-    public void sendString(String x){
-        try {
-            dos.writeUTF(x);
-            
-        } catch (IOException ex) {
-            System.out.println("Error sending String:\n" + ex);
-        }
-    }
-    public String receiveString(){
-        String x = "X";
-        try {
-            x = dis.readUTF();
-            
-        } catch (IOException ex) {
-            System.out.println("ERROR reading String:\n" + ex);
-        }
-        return x;
-    }
-    public void sendArray(String user, Array a, long segment){
-        System.out.println("> Preparing to send the file.");
-        long dim = a.getDimension();
-        System.out.println("> Size of the file: " + dim);
-        sendLong(dim);
-        System.out.println("> Size of the segments: " + segment);
-        sendLong(segment);
-        
-        /*All the file except last segment 
-        (Because it may be smaller than segment size)*/
-        int i = 0;
-        while(i < (dim/segment)){
-            
-            try {
-                dos.write( a.returnArray(), i*(int)segment, (int)segment);
-                
-            } catch (IOException ex) {
-                System.out.println("> ERROR SENDING ARRAY IN SEGMENTS");
-                System.out.println(ex);
-            }
-            
-            System.out.println("    [" +(i*segment)+ "/" +dim+ "]" );
-            i++;
-        }
-        
-        try {
-            dos.write( a.returnArray(), i*(int)segment, (int)(dim%segment) );
-            System.out.println("    [" +(i*segment)+ "/" +dim+ "]" );
-            
-        } catch (IOException ex) {
-            System.out.println("> ERROR SENDING LAST SEGMENT\n" + ex);
-        }
-        System.out.println("    [" +(dim)+ "/" +dim+ "]" );
-    }
-    private void sendLong(long x){
-        try{
-            dos.writeLong(x);
-            
-        } catch(IOException ex){
-            System.out.println("ERROR SENDING LONG.\n" + ex);
-        }
-    }
 }
+/*
+case "FILE":
+                if(user.equals(userName) ){
+                    try {
+                        System.out.println(C_GREEN + "Opening subprocess for sending a file..");
+                            
+                        Process proc = Runtime.getRuntime().exec("java -jar FileSender.jar " + msg);
+
+                        BufferedReader reader
+                                = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                        String r;
+                        while ((r = reader.readLine()) != null) {
+                            System.out.println(C_GREEN + r + C_RST);
+                        }
+                        try {
+                            proc.waitFor();
+                        } catch (InterruptedException ex) {
+                            System.out.println("ERROR ON THE FILE RECEIVER PROCESS: " + ex);
+                        }
+                        proc.destroy();
+                        
+                    } catch (IOException ex) {
+                        System.out.println("Couldn't execute the file sender.");
+                    }
+                }
+                else{
+                    try {
+                        System.out.println(C_GREEN + "Opening subprocess for receiving a file..");
+                        Process proc = Runtime.getRuntime().exec("java -jar FileReceiver.jar");
+                        
+                        BufferedReader reader
+                                = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                        String r;
+                        while ((r = reader.readLine()) != null) {
+                            System.out.println(r);
+                        }
+                        try {
+                            proc.waitFor();
+                        } catch (InterruptedException ex) {
+                            System.out.println("ERROR ON THE FILE RECEIVER PROCESS: " + ex);
+                        }
+                        
+                        proc.destroy();
+                        
+                    } catch (IOException ex) {
+                        System.out.println("Couldn't execute the file receiver,");
+                    }
+                    
+                }
+                break;
+*/
