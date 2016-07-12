@@ -1,13 +1,14 @@
-# uMessenger - Alpha 0.5 version
+# uMessenger - Beta 1.0
 
 Small Messenger-like application designed to run from the command line, and works on the same LAN only (unless using NAT on the server side with a Raspberry for example). **It's important to have userList.txt on the directory where the server is.**
 
 If you wanna try it yourself you can either:
 
-- Download the full zip file, and compile it yourself on your favourite IDE.
+- Download the zip of the full repository and compile it yourself on your favourite IDE.
 
-- Or download the two jar files and run it from the command line.
-_I also uploaded two .cmd files that if placed in the same directory as the .jar files they will open in a new command window (perfect for lazy people like myself)_.
+- Or download the zip file for being either a server or a client and run the corresponding .jar from the command line.
+
+ _Inside the rar there are .cmd files that executes `java -jar UMessengerClient.jar´ in a new command window (perfect for lazy people like myself)_.
 
 <p align = "center">
   <img src="https://raw.githubusercontent.com/ismaelestalayo/uMessenger/master/Images/Screenshot.png" width = "60%"/>
@@ -25,6 +26,5 @@ Feel free to suggest anything at:
  * Email: ismael.em@outlook.com
  * Twitter: [@isma_estalayo](https://twitter.com/isma_estalayo)
 
-__NOTE: The files are sent in segments of just 100 bytes, because I realized that some networks fragmented the TCP datagrams smaller than my first two aproximations of 2000 and 1000 bytes, so that the photos I was sending were received almost totally corrupted because of the Offset.__
-
-__In the next updates I'll try to find the most efficient size of segments wihtout the need of segmentation on the TCP layer.__
+_NOTE:_
+_I made the sending of files so that I could change the size of the segments I was sending, but the only size where the videos weren't corrupted was at the size of 1 byte. Even so, I've left the code there, so if you wanna try it yourself, on the FileSending class just change  con.sendArray(fileDumpedInArray, 1)  to the size of segment you want, bear in mind that most files will be corrupted although I noticed photos not being corrupted but severely altered with a segment size greater than 500._
