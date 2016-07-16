@@ -38,7 +38,7 @@ public class FileReceiverHandler {
             dis = new DataInputStream(bis);
             
         } catch (FileNotFoundException ex) {
-            System.out.println("    >ERROR OPENING BINARY READING MODE: " + ex);
+            System.out.println("   >ERROR OPENING BINARY READING MODE: " + ex);
         }
     }
     private void closeBinaryReading(){
@@ -52,7 +52,7 @@ public class FileReceiverHandler {
                 fis.close();
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR CLOSING BINARY READING MODE: " + ex);
+            System.out.println("   >ERROR CLOSING BINARY READING MODE: " + ex);
         }
     }
     
@@ -65,7 +65,7 @@ public class FileReceiverHandler {
             dos = new DataOutputStream(bos);
             
         } catch (FileNotFoundException ex) {
-            System.out.println("    >ERROR OPENING BINARY WRITING MODE: " + ex);
+            System.out.println("   >ERROR OPENING BINARY WRITING MODE: " + ex);
         }
     }
     private void closeBinaryWriting(){
@@ -80,7 +80,7 @@ public class FileReceiverHandler {
                 fos.close();
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR CLOSINGBINARY WRITING MODE: " + ex);
+            System.out.println("   >ERROR CLOSINGBINARY WRITING MODE: " + ex);
         }
     }
     
@@ -92,7 +92,7 @@ public class FileReceiverHandler {
             dim = dis.available();
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR OBTENIENDO DIMENSION\n" + ex);
+            System.out.println("   >ERROR OBTENIENDO DIMENSION\n" + ex);
         }
         
         closeBinaryReading();
@@ -106,13 +106,13 @@ public class FileReceiverHandler {
     public void dumpArrayToFile(FilesArray a){
         
         openBinaryWriting();
-        System.out.println("    >File " + fileName + " saved.");
+        System.out.println("   >File " + fileName + " saved.");
         
         try {
             dos.write( a.getArray() );
             
         } catch (IOException ex) {
-            System.out.println("    >ERROR DUMPING THE ARRAY TO A FILE: " + ex);
+            System.out.println("   >ERROR DUMPING THE ARRAY TO A FILE: " + ex);
         }
         closeBinaryWriting();
     }
