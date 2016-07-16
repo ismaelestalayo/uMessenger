@@ -44,8 +44,9 @@ public class FileSenderHandler {
 
     }
     
-    public FileSenderHandler(String filename){
-        this.fileName = filename;
+    public FileSenderHandler(String fileName){
+        this.fileName = fileName;
+        this.filePath = fileName;
     }
     
 //////METHODS///////////////////////////////////////////////////////////////////
@@ -57,7 +58,7 @@ public class FileSenderHandler {
             dis = new DataInputStream(bis);
             
         } catch (FileNotFoundException ex) {
-            System.out.println("    >ERROR OPENING BINARY READING MODE: " + ex);
+            System.out.println("   >ERROR OPENING BINARY READING MODE: " + ex);
         }
     }
     private void closeBinaryReading(){
@@ -71,7 +72,7 @@ public class FileSenderHandler {
                 fis.close();
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR CLOSING BINARY READING MODE: " + ex);
+            System.out.println("   >ERROR CLOSING BINARY READING MODE: " + ex);
         }
     }
     
@@ -83,7 +84,7 @@ public class FileSenderHandler {
             dos = new DataOutputStream(bos);
             
         } catch (FileNotFoundException ex) {
-            System.out.println("    >ERROR OPENING BINARY WRITING MODE: " + ex);
+            System.out.println("   >ERROR OPENING BINARY WRITING MODE: " + ex);
         }
     }
     private void closeBinaryWriting(){
@@ -97,7 +98,7 @@ public class FileSenderHandler {
                 fos.close();
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR CLOSING BINARY WRINTING MODE: " + ex);
+            System.out.println("   >ERROR CLOSING BINARY WRINTING MODE: " + ex);
         }
     }
     
@@ -109,7 +110,7 @@ public class FileSenderHandler {
             dim = dis.available();
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR GETTING FILE DIMENSION:" + ex);
+            System.out.println("   >ERROR GETTING FILE DIMENSION:" + ex);
         }
         
         closeBinaryReading();
@@ -131,7 +132,7 @@ public class FileSenderHandler {
             dis.read( a.getArray() );
             
         } catch (IOException ex) {
-            System.out.println("    >ERROR DUMPING THE FILE TO AN ARRAY: " + ex);
+            System.out.println("   >ERROR DUMPING THE FILE TO AN ARRAY: " + ex);
         }
         
         closeBinaryReading();

@@ -43,11 +43,11 @@ public class FilesConnection {
 //////METHODS///////////////////////////////////////////////////////////////////
     private void openClientSocket(){
         
-        System.out.print("    >Trying to connect to " + dir + "(" + port + ")..");
+        System.out.print("   >Trying to connect to " + dir + "(" + port + ")..");
         do{
             try {
                 socketCliente = new Socket(dir, port);
-                System.out.println("\n    >Connected to the receiver!");
+                System.out.println("\n   >Connected to the receiver!");
 
             } catch (IOException ex) {
                 System.out.print(".");
@@ -56,14 +56,14 @@ public class FilesConnection {
     }
     private void openServerSocket(){
         
-        System.out.println("    >Waiting for the sender...");
+        System.out.println("   >Waiting for the sender...");
         try {
             socketServer = new ServerSocket(port);
             socketCliente = socketServer.accept();
-            System.out.println("    >Connected to the sender!");
+            System.out.println("   >Connected to the sender!");
             
         } catch (Exception ex) {
-            System.out.println("    >ERROR OPENING SERVER SOCKET: " + ex);
+            System.out.println("   >ERROR OPENING SERVER SOCKET: " + ex);
         }
     }
     public void closeAllSockets(){
@@ -75,7 +75,7 @@ public class FilesConnection {
                 socketCliente.close();
             
         } catch (IOException ex) {
-            System.out.println("    >ERROR CLOSING ALL SOCKETS: " + ex);
+            System.out.println("   >ERROR CLOSING ALL SOCKETS: " + ex);
         }
     }
     
@@ -86,7 +86,7 @@ public class FilesConnection {
             dos = new DataOutputStream( socketCliente.getOutputStream() );
             
         } catch (IOException ex) {
-            System.out.println("    >ERROR OPENING STREAMS: " + ex);
+            System.out.println("   >ERROR OPENING STREAMS: " + ex);
         }
     }
     
@@ -96,7 +96,7 @@ public class FilesConnection {
         try {
             dos.writeLong(x);
         } catch (IOException ex) {
-            System.out.println("    >ERROR SENDING LONG ON FILESCONNECTION: " + ex);
+            System.out.println("   >ERROR SENDING LONG ON FILESCONNECTION: " + ex);
         }
     }
     public long receiveLong(){ //Only needed for the FileReceiver
@@ -106,7 +106,7 @@ public class FilesConnection {
         try {
             x = dis.readLong();
         } catch (Exception ex) {
-            System.out.println("    >ERROR RECEIVING LONG ON FILESCONNECTION: " + ex);
+            System.out.println("   >ERROR RECEIVING LONG ON FILESCONNECTION: " + ex);
         }
         
         return x;
@@ -116,7 +116,7 @@ public class FilesConnection {
         try {
             dos.writeUTF(s);
         } catch (IOException ex) {
-            System.out.println("    >ERROR SENDING STRING ON FILESCONNECTION: " + ex);
+            System.out.println("   >ERROR SENDING STRING ON FILESCONNECTION: " + ex);
         }
     }
     public String receiveString(){ //Only needed for the FileReceiver
@@ -124,7 +124,7 @@ public class FilesConnection {
         try {
             x = dis.readUTF();
         } catch (IOException ex) {
-            System.out.println("    >ERROR RECIEVING STRING ON FILESCONNECTION: " + ex);
+            System.out.println("   >ERROR RECIEVING STRING ON FILESCONNECTION: " + ex);
         }
         return x;
     }
@@ -133,11 +133,11 @@ public class FilesConnection {
     public void sendArray(FilesArray a, long segmentSize){
         
         long dim = a.getDim();
-        System.out.println("    >File size: " + dim/1000 + "kb");
+        System.out.println("   >File size: " + dim/1000 + "kb");
         sendLong(dim);
         //System.out.println("  >Segment size: " + segmentSize);
         sendLong(segmentSize);
-        System.out.print("     [");
+        System.out.print("    [");
         
         //All segments except the last one
         //Because last segment may be smaller than segment size
@@ -148,7 +148,7 @@ public class FilesConnection {
                 dos.write( a.getArray(), i*(int)segmentSize, (int)segmentSize);
                 
             } catch (IOException ex) {
-                System.out.println("    >ERROR SENDING A SEGMENT: " + ex);
+                System.out.println("   >ERROR SENDING A SEGMENT: " + ex);
             }
             
             //NEW WAY OF DISPLAYING PROGRESS:
@@ -166,18 +166,18 @@ public class FilesConnection {
             System.out.println("|]");
             
         } catch (IOException ex) {
-            System.out.println("    >ERROR SENDING LAST SEGMENT: " + ex);
+            System.out.println("   >ERROR SENDING LAST SEGMENT: " + ex);
         }
-        System.out.println("    >File transfer complete.");
+        System.out.println("   >File transfer complete.");
     }
     
     public FilesArray receiveArray(){
         
         long dim = receiveLong();
-        System.out.println("    >File size: " + dim/1000 + "kb");
+        System.out.println("   >File size: " + dim/1000 + "kb");
         long segmentSize = receiveLong();
         //System.out.println("  >Segment size: " + segmentSize);
-        System.out.print("     [");
+        System.out.print("    [");
         
         //All segments except the last one
         //Because last segment may be smaller than segment size
@@ -189,7 +189,7 @@ public class FilesConnection {
                 dis.read( b.getArray(), i*(int)segmentSize, (int)segmentSize);
                 
             } catch (IOException ex) {
-                System.out.println("    >ERROR RECEIVING A SEGMENT: " + ex);
+                System.out.println("   >ERROR RECEIVING A SEGMENT: " + ex);
             }
             
             //NEW WAY OF DISPLAYING PROGRESS:
@@ -206,9 +206,9 @@ public class FilesConnection {
             System.out.println("|]");
             
         } catch (IOException ex) {
-            System.out.println("    >ERROR RECEIVING LAST SEGMENT: " + ex);
+            System.out.println("   >ERROR RECEIVING LAST SEGMENT: " + ex);
         }
-        System.out.println("    >File transfer complete.");
+        System.out.println("   >File transfer complete.");
         
         return b;
     }

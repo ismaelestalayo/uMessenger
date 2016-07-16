@@ -15,6 +15,7 @@ public final class ChatClient implements Runnable{
     private static Scanner keyboard = new Scanner(System.in);
     
     private String userName = "";
+    private static String dir = null;
     
     public static final String C_RST = "\u001B[0m";
     public static final String C_BLACK = "\u001B[30m";
@@ -29,7 +30,7 @@ public final class ChatClient implements Runnable{
 //////CONSTRUCTOR///////////////////////////////////////////////////////////////
     public ChatClient(String dir, int port) {
         
-        System.out.print("Choose an user name: " + C_RST);
+        System.out.print(C_GREEN + "Choose an user name: " + C_RST);
         userName = keyboard.nextLine();
         
         System.out.print(C_GREEN + "Connecting, please wait...");
@@ -54,7 +55,7 @@ public final class ChatClient implements Runnable{
         
         System.out.print(C_GREEN + "(If you are the server, put your IP, not 'localhost')\n" + C_RST);
         System.out.print(C_GREEN + "Insert the IP of the server: " + C_RST);
-        String dir = keyboard.nextLine();
+        dir = keyboard.nextLine();
         
         client = new ChatClient(dir, 5000);
     }
@@ -128,7 +129,12 @@ public final class ChatClient implements Runnable{
                     System.out.println(C_GREEN + msg + C_RST);
                 
                 break;
-              
+            
+            case "NEW":
+                //Print to all users
+                System.out.println(C_CYAN + "User " + user + " connected!" + C_RST);
+                break;
+                
             case "FIN":
                 //For the user that requested it, end it's session
                 if(user.equals(userName) ){
@@ -145,7 +151,7 @@ public final class ChatClient implements Runnable{
             case "FILE":
                 if(user.equals(userName) ){
                     System.out.println(C_GREEN + "Opening subprocess for sending a file..");
-                    FileSender sender = new FileSender(msg);
+                    FileSender sender = new FileSender(dir);
                     System.out.print(C_RST);
                     
                 } else{

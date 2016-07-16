@@ -53,12 +53,12 @@ public final class ChatClientThread extends Thread{
                 
             } catch (IOException ex) {
                 System.out.println(C_RED + "_________________________________________");
-                System.out.println("Listeningg error: " + ex + C_RST);
+                System.out.println("Lost connection with the server: " + ex + C_RST);
                 System.out.println("Press enter to close.");
                 client.closeAll();
             } catch (ClassNotFoundException ex) {
                 System.out.println(C_RED + "_________________________________________");
-                System.out.println("Listeningg error: " + ex + C_RST);
+                System.out.println("Lost connection with the server: " + ex + C_RST);
                 System.out.println("Press enter to close.");
                 client.closeAll();
             }

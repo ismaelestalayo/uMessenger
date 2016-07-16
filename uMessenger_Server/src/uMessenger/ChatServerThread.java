@@ -13,11 +13,15 @@ public class ChatServerThread extends Thread {
     private int ID = -1;
     private String userName = "";
     
-    public final String C_RST = "\u001B[0m";
-    public final String C_RED = "\u001B[31m";
-    public final String C_GREEN = "\u001B[32m";
-    public final String C_YELLOW = "\u001B[33m";
-    public final String C_CYAN = "\u001B[36m";
+    private final String C_RST = "\u001B[0m";
+    private final String C_BLUE = "\u001B[34m";
+    private final String C_CYAN = "\u001B[36m";
+    private final String C_GREEN = "\u001B[32m";
+    private final String C_PURPLE = "\u001B[35m";
+    private final String C_RED = "\u001B[31m";
+    private final String C_YELLOW = "\u001B[33m";
+    
+    private String[] colors = {C_BLUE, C_CYAN, C_GREEN, C_PURPLE, C_RED, C_YELLOW};
     
 //////CONSTRUCTOR///////////////////////////////////////////////////////////////
     public ChatServerThread(ChatServer cs, Socket socket) {
@@ -30,10 +34,12 @@ public class ChatServerThread extends Thread {
     //METHODS///////////////////////////////////////////////////////////////////
     @Override
     public void run() {
-        System.out.println("Server Thread " + ID + " running.");
-        
         readUserName();
         checkNewUser();
+        
+        System.out.println(C_CYAN + "Added client " + userName + " (" + getUserIP()
+                + ") on thread " + ID + C_RST);
+        server.broadcast(userName, ID, "/newUser");
         
         while (true) {
             try {
@@ -65,7 +71,6 @@ public class ChatServerThread extends Thread {
             System.out.println("ERROR reading userName:\n" + ex);
         }
     }
-    
     
     private void checkNewUser(){
         

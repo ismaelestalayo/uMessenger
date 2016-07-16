@@ -8,9 +8,11 @@ public class Object implements Serializable{
     private String type;
     private String user;
     private String msg;
+    private String color;
     
-    public Object(String type, String user, String msg){
+    public Object(String type, String color, String user, String msg){
         this.type = type;
+        this.color = color;
         this.user = user;
         this.msg = msg;
     }
@@ -24,5 +26,7 @@ public class Object implements Serializable{
     public String getMsg(){
         return msg;
     }
-    
+    public String getColor(){
+        return color;
+    }
 }

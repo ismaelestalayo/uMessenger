@@ -1,4 +1,4 @@
-# uMessenger - Beta 1.1
+# uMessenger - Beta 1.2
 
 Small Messenger-like application designed to run from the command line, and works on the same LAN only (unless using NAT on the server side with a Raspberry for example). **It's important to have userList.txt on the directory where the server is.**
 
@@ -15,6 +15,10 @@ If you wanna try it yourself you can either:
 </p>
 
 #Changelog:
+####1.2:
+- Notification to all users when a new user joins.
+- Sending files between different networks should be working now.
+
 ####1.1:
 - Changed most of the code from using `dos.sendUTF()` to `oos.sendObject()` to make easier understanding the code and adding more functionality in the future.
 - Notification when a client dissconects closing the windows instead of `/fin`.
@@ -31,9 +35,9 @@ If you wanna try it yourself you can either:
 
 - ~~Usernames~~ with password
 - ~~Ability to send files~~
-- (More) Commands
+- ~~Ability to send files between different LANs~~
 - Save logs from the server
-- FileSending between users behind NAT
+- (More) Commands
 
 #Suggest anything at:
 

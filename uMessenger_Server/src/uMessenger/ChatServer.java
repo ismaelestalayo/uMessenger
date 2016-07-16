@@ -1,5 +1,8 @@
 package uMessenger;
 
+import fileTransfer.FileReceiver;
+import fileTransfer.FileSender;
+import fileTransfer.FileSenderHandler;
 import java.net.*;
 import java.io.*;
 
@@ -71,14 +74,7 @@ public class ChatServer implements Runnable {
 
     public synchronized void broadcast(String userName, int ID, String msg){
         
-        if(msg.equals("/fin") ){
-            for (int i = 0; i < clientCount; i++)
-                clients[i].sendMsg("FIN", userName, "doesn't mind");
-            
-            removeClient(ID);
-        } 
-        
-        else if(msg.equals("/forcedFin")){
+        if(msg.equals("/forcedFin")){
             for (int i = 0; i < clientCount; i++)
                 //don't send it to the user who closed the window
                 if(!clients[i].getUserName().equals(userName))
@@ -86,6 +82,22 @@ public class ChatServer implements Runnable {
             
             removeClient(ID);
         }
+        
+        else if(msg.equals("/newUser")){
+            for (int i = 0; i < clientCount; i++)
+                clients[i].sendMsg("NEW", userName, "doesn't mind");
+            
+        }
+        
+        /////// my commands   ↑ //////////////////////////////////////
+        /////// chat commands ↓ //////////////////////////////////////
+        
+        else if(msg.equals("/fin") ){
+            for (int i = 0; i < clientCount; i++)
+                clients[i].sendMsg("FIN", userName, "doesn't mind");
+            
+            removeClient(ID);
+        } 
         
         else if(msg.equals("/help") ){
             for (int i = 0; i < clientCount; i++)
@@ -97,8 +109,13 @@ public class ChatServer implements Runnable {
         else if(msg.equals("/IPs")){
             String userList = "";
             
-            for (int i = 0; i < clientCount; i++)
-                userList += "    >" + clients[i].getUserName() + " - " +clients[i].getUserIP()+ "\n";
+            for (int i = 0; i < clientCount; i++){
+                if(i != clientCount -1){
+                    userList += "   " + clients[i].getUserName() + " (" +clients[i].getUserIP()+ ")\n";
+                } else{
+                    userList += "   " + clients[i].getUserName() + " (" +clients[i].getUserIP()+ ")";
+                }
+            }
             
             for (int i = 0; i < clientCount; i++)
                 if(clients[i].getUserName().equals(userName) )
@@ -106,59 +123,68 @@ public class ChatServer implements Runnable {
         }
         
         else if(msg.startsWith("/send") ){
-            String target = msg.split("/send")[1];
-            String targetIP = "";
-            boolean sent = false;
-            for(int i = 0; i < clientCount; i++){
-                if(clients[i].getUserName().equals(target)){
-                    targetIP = clients[i].getUserIP();
-                    sent = true;
-                }
-            }
-            //If there was an user with that name:
-            if(sent){
-                for (int i = 0; i < clientCount; i++){
-                    if(clients[i].getUserName().equals(userName)){
-                        clients[i].sendMsg("FILE", userName, targetIP);
-                    }
-                    else if(clients[i].getUserName().equals(target) ){
-                        clients[i].sendMsg("FILE", userName, "doesn't mind" );
+            //If someone puts /send but no username, try-catch:
+            try{
+                String target = msg.split("/send")[1];
+                String targetIP = "";
+                String fileName = "";
+                
+                boolean sent = false;
+                for (int i = 0; i < clientCount; i++) {
+                    if (clients[i].getUserName().equals(target)) {
+                        targetIP = clients[i].getUserIP();
+                        sent = true;
                     }
                 }
-            }
-            else{
-                for (int i = 0; i < clientCount; i++){
-                    if(clients[i].getUserName().equals(userName)){
-                        clients[i].sendMsg("INFO", userName, "User " 
-                                +target+ " was not found.");
+                //If there was an user with that name:
+                if (sent) {
+                    for (int i = 0; i < clientCount; i++) {
+                        if (clients[i].getUserName().equals(userName)) {
+                            clients[i].sendMsg("FILE", userName, "doesnt mind");
+                            FileReceiver receiver = new FileReceiver();
+                            fileName = receiver.getFileName();
+                        }
+                    }
+                    for(int i = 0; i < clientCount; i++) {
+                        if (clients[i].getUserName().equals(target)) {
+                            clients[i].sendMsg("FILE", userName, "doesn't mind");
+                            FileSender sender = new FileSender(targetIP, fileName );
+                            
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < clientCount; i++) {
+                        if (clients[i].getUserName().equals(userName)) {
+                            clients[i].sendMsg("INFO", userName, "   User "
+                                    + target + " was not found.");
+                        }
                     }
                 }
+                
+            } catch(ArrayIndexOutOfBoundsException ex){
+                for(int i = 0; i < clientCount; i++){
+                    if(clients[i].getUserName().equals(userName))
+                        clients[i].sendMsg("INFO", userName, "   You must write"
+                                + " who you want to send it to (/sendAnon)");
+                    
+                }
             }
-//            if(sent){
-//                for (int i = 0; i < clientCount; i++){
-//                    if(clients[i].getUserName().equals(userName)){
-//                        clients[i].sendMsg("FILE", userName, targetIP);
-//                    }
-//                    else if(clients[i].getUserName().equals(target) ){
-//                        clients[i].sendMsg("FILE", userName, "doesn't mind" );
-//                    }
-//                }
-//            }
-//            else{
-//                for (int i = 0; i < clientCount; i++){
-//                    if(clients[i].getUserName().equals(userName)){
-//                        clients[i].sendMsg("INFO", userName, "User " 
-//                                +target+ " was not found.");
-//                    }
-//                }
-//            }
+        }
+        
+        else if(msg.equals("/trivial")){
+            fileTransfer.FileSenderHandler f = new FileSenderHandler("trivial.txt");
         }
         
         else if(msg.equals("/users") ){
             String userList = "";
-            //For some reason concat() is not working properly for me
-            for (int i = 0; i < clientCount; i++)
-                userList += "    >" + clients[i].getUserName() + "\n";
+            
+            for (int i = 0; i < clientCount; i++){
+                if(i != clientCount-1){
+                    userList += "   " + clients[i].getUserName() + "\n";
+                } else{
+                    userList += "   " + clients[i].getUserName();
+                }
+            }
             
             for (int i = 0; i < clientCount; i++)
                 if(clients[i].getUserName().equals(userName) )
@@ -220,13 +246,12 @@ public class ChatServer implements Runnable {
     private void addThread(Socket socket) {
         if (clientCount < clients.length) {
             clients[clientCount] = new ChatServerThread(this, socket);
-            System.out.println(C_CYAN
-                    + "Client accepted: "
-                    + socket.getInetAddress().getHostAddress() + C_RST );
+            System.out.print("New client added. ");
             
             try {
                 clients[clientCount].openStreams();
                 clients[clientCount].start();
+                
                 clientCount++;
                 
             } catch (IOException ioe) {
@@ -252,7 +277,7 @@ public class ChatServer implements Runnable {
                 + "    /help - This one\n"
                 + "    /IPs - Prints a list of users and their IPs\n"
                 + "    /sendUser - Send a file to the specified user.\n"
-                + "    /users - Prints a list of online users\n";
+                + "    /users - Prints a list of online users";
     }
 }
 

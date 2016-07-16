@@ -2,20 +2,18 @@ package fileTransfer;
 
 public class FileReceiver {
     
-    public FileReceiver(){
-        main(null);
-    }
+    private String fileName;
     
-    public static void main(String[] args){
+    public FileReceiver(){
         FilesConnection ms = new FilesConnection(5077);
         
-        String fileName = ms.receiveString();
+        fileName = ms.receiveString();
         if(fileName.equals("NULL") ){
-            System.out.println("    >Sender didnt select a file.");
-            System.out.println("    >Exiting...");
+            System.out.println("   >Sender didnt select a file.");
+            System.out.println("   >Exiting...");
             
         } else{
-            System.out.println("    >File to receive: " + fileName);
+            System.out.println("   >File to receive: " + fileName);
             FilesArray receivedArray = ms.receiveArray();
 
             FileReceiverHandler binario = new FileReceiverHandler(fileName);
@@ -24,4 +22,7 @@ public class FileReceiver {
         ms.closeAllSockets();
     }
     
+    public String getFileName(){
+        return fileName;
+    }
 }
