@@ -1,4 +1,4 @@
-# uMessenger - Beta 1.2
+# uMessenger - Beta 1.3
 
 Small Messenger-like application designed to run from the command line, and works on the same LAN only (unless using NAT on the server side with a Raspberry for example). **It's important to have userList.txt on the directory where the server is.**
 
@@ -6,7 +6,7 @@ If you wanna try it yourself you can either:
 
 - Download the zip of the full repository and compile it yourself on your favourite IDE.
 
-- Or download the zip file for being either a server or a client and run the corresponding .jar from the command line.
+- Or download the zip file for being either a server or a client and run the corresponding .jar from the command line. Click on one of the rar files, and in the upper right corner, click on raw to download it.
 
  _Inside the rar there are .cmd files that executes `java -jar uMessenger_Client.jar` in a new command window (perfect for lazy people like myself)_.
 
@@ -15,6 +15,10 @@ If you wanna try it yourself you can either:
 </p>
 
 #Changelog:
+####1.3:
+- Probably last beta version, as I have already fixed most of the issues and it's stable.
+- Added a color for each username up to 6 users (then colors will be repeated, because of limits of the cmd).
+
 ####1.2:
 - Notification to all users when a new user joins.
 - Sending files between different networks should be working now.
