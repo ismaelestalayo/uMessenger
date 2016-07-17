@@ -1,3 +1,20 @@
+/* 
+ * Copyright (C) 2016 Ismael Estalayo Mena
+                        http://github.com/ismaelestalayo
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package uMessenger;
 
 import fileTransfer.FileReceiver;
@@ -13,10 +30,17 @@ public class ChatServer implements Runnable {
     private Thread thread = null;
     
     private int clientCount = 0;
+    private int c = 0;              //For the array of colors
     
-    public final String C_RST = "\u001B[0m";
-    public final String C_RED = "\u001B[31m";
-    public final String C_CYAN = "\u001B[36m";
+    private final String C_RST = "\u001B[0m";
+    private final String C_BLUE = "\u001B[34m";
+    private final String C_CYAN = "\u001B[36m";
+    private final String C_GREEN = "\u001B[32m";
+    private final String C_PURPLE = "\u001B[35m";
+    private final String C_RED = "\u001B[31m";
+    private final String C_YELLOW = "\u001B[33m";
+    
+    private String[] colors = {C_CYAN, C_GREEN, C_YELLOW, C_PURPLE, C_RED, C_BLUE};
     
     //CONSTRUCTOR///////////////////////////////////////////////////////////////
     public ChatServer(int port) {
@@ -72,20 +96,20 @@ public class ChatServer implements Runnable {
         return -1;
     }
 
-    public synchronized void broadcast(String userName, int ID, String msg){
+    public synchronized void broadcast(String userName, String color, int ID, String msg){
         
         if(msg.equals("/forcedFin")){
             for (int i = 0; i < clientCount; i++)
                 //don't send it to the user who closed the window
                 if(!clients[i].getUserName().equals(userName))
-                    clients[i].sendMsg("FIN", userName, "doesn't mind");
+                    clients[i].sendMsg("FIN", userName, color, "doesn't mind");
             
             removeClient(ID);
         }
         
         else if(msg.equals("/newUser")){
             for (int i = 0; i < clientCount; i++)
-                clients[i].sendMsg("NEW", userName, "doesn't mind");
+                clients[i].sendMsg("NEW", userName, color, "doesn't mind");
             
         }
         
@@ -94,7 +118,7 @@ public class ChatServer implements Runnable {
         
         else if(msg.equals("/fin") ){
             for (int i = 0; i < clientCount; i++)
-                clients[i].sendMsg("FIN", userName, "doesn't mind");
+                clients[i].sendMsg("FIN", userName, color, "doesn't mind");
             
             removeClient(ID);
         } 
@@ -102,7 +126,7 @@ public class ChatServer implements Runnable {
         else if(msg.equals("/help") ){
             for (int i = 0; i < clientCount; i++)
                 if(clients[i].getUserName().equals(userName) )
-                    clients[i].sendMsg("INFO", userName, helpMessage() );
+                    clients[i].sendMsg("INFO", userName, color, helpMessage() );
             
         }
         
@@ -119,7 +143,7 @@ public class ChatServer implements Runnable {
             
             for (int i = 0; i < clientCount; i++)
                 if(clients[i].getUserName().equals(userName) )
-                    clients[i].sendMsg("INFO", userName, userList );
+                    clients[i].sendMsg("INFO", userName, color, userList );
         }
         
         else if(msg.startsWith("/send") ){
@@ -140,14 +164,14 @@ public class ChatServer implements Runnable {
                 if (sent) {
                     for (int i = 0; i < clientCount; i++) {
                         if (clients[i].getUserName().equals(userName)) {
-                            clients[i].sendMsg("FILE", userName, "doesnt mind");
+                            clients[i].sendMsg("FILE", userName, color, "doesnt mind");
                             FileReceiver receiver = new FileReceiver();
                             fileName = receiver.getFileName();
                         }
                     }
                     for(int i = 0; i < clientCount; i++) {
                         if (clients[i].getUserName().equals(target)) {
-                            clients[i].sendMsg("FILE", userName, "doesn't mind");
+                            clients[i].sendMsg("FILE", userName, color, "doesn't mind");
                             FileSender sender = new FileSender(targetIP, fileName );
                             
                         }
@@ -155,7 +179,7 @@ public class ChatServer implements Runnable {
                 } else {
                     for (int i = 0; i < clientCount; i++) {
                         if (clients[i].getUserName().equals(userName)) {
-                            clients[i].sendMsg("INFO", userName, "   User "
+                            clients[i].sendMsg("INFO", userName, color, "   User "
                                     + target + " was not found.");
                         }
                     }
@@ -164,7 +188,7 @@ public class ChatServer implements Runnable {
             } catch(ArrayIndexOutOfBoundsException ex){
                 for(int i = 0; i < clientCount; i++){
                     if(clients[i].getUserName().equals(userName))
-                        clients[i].sendMsg("INFO", userName, "   You must write"
+                        clients[i].sendMsg("INFO", userName, color, "   You must write"
                                 + " who you want to send it to (/sendAnon)");
                     
                 }
@@ -180,15 +204,15 @@ public class ChatServer implements Runnable {
             
             for (int i = 0; i < clientCount; i++){
                 if(i != clientCount-1){
-                    userList += "   " + clients[i].getUserName() + "\n";
+                    userList += "   " + clients[i].getUserColor() + clients[i].getUserName() + C_RST + "\n";
                 } else{
-                    userList += "   " + clients[i].getUserName();
+                    userList += "   " + clients[i].getUserColor() + clients[i].getUserName() + C_RST;
                 }
             }
             
             for (int i = 0; i < clientCount; i++)
                 if(clients[i].getUserName().equals(userName) )
-                    clients[i].sendMsg("INFO", userName, userList );
+                    clients[i].sendMsg("INFO", userName, color, userList );
             
         }
         
@@ -203,12 +227,12 @@ public class ChatServer implements Runnable {
             }
             if(kicked){
                 for (int i = 0; i < clientCount; i++)
-                    clients[i].sendMsg("FIN", userToKick, "doesn't mind");
+                    clients[i].sendMsg("FIN", userToKick, color, "doesn't mind");
             }
             else{
                 for (int i = 0; i < clientCount; i++){
                     if(clients[i].getUserName().equals(userName) )
-                        clients[i].sendMsg("INFO", userName, "User "
+                        clients[i].sendMsg("INFO", userName, color, "User "
                                 +userToKick+ " wasn't found." );
                 }
             }
@@ -217,7 +241,7 @@ public class ChatServer implements Runnable {
         //Normal messages:
         else {
             for (int i = 0; i < clientCount; i++) {
-                clients[i].sendMsg("CHAT", userName, msg);
+                clients[i].sendMsg("CHAT", userName, color, msg);
             }
         }
     }
@@ -244,24 +268,20 @@ public class ChatServer implements Runnable {
         }
     }
     private void addThread(Socket socket) {
-        if (clientCount < clients.length) {
-            clients[clientCount] = new ChatServerThread(this, socket);
-            System.out.print("New client added. ");
-            
-            try {
-                clients[clientCount].openStreams();
-                clients[clientCount].start();
-                
-                clientCount++;
-                
-            } catch (IOException ioe) {
-                System.out.println("Error opening thread: " + ioe);
-            }
-            
-        } else {
-            System.out.println(C_RED
-                    + "Maximum client number (" + clients.length
-                    + ") reached." + C_RST);
+        if(c > 5)
+            c = 0;
+        clients[clientCount] = new ChatServerThread(this, socket, colors[c]);
+        c++;
+        System.out.print("New client added. ");
+
+        try {
+            clients[clientCount].openStreams();
+            clients[clientCount].start();
+
+            clientCount++;
+
+        } catch (IOException ioe) {
+            System.out.println("Error opening thread: " + ioe);
         }
     }
     

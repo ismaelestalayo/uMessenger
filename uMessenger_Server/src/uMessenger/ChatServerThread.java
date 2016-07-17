@@ -1,3 +1,20 @@
+/* 
+ * Copyright (C) 2016 Ismael Estalayo Mena
+                        http://github.com/ismaelestalayo
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package uMessenger;
 
 import java.net.*;
@@ -12,6 +29,7 @@ public class ChatServerThread extends Thread {
         
     private int ID = -1;
     private String userName = "";
+    private String color;
     
     private final String C_RST = "\u001B[0m";
     private final String C_BLUE = "\u001B[34m";
@@ -24,10 +42,11 @@ public class ChatServerThread extends Thread {
     private String[] colors = {C_BLUE, C_CYAN, C_GREEN, C_PURPLE, C_RED, C_YELLOW};
     
 //////CONSTRUCTOR///////////////////////////////////////////////////////////////
-    public ChatServerThread(ChatServer cs, Socket socket) {
+    public ChatServerThread(ChatServer cs, Socket socket, String MyColor) {
         super();
         this.server = cs;
         this.socket = socket;
+        this.color = MyColor;
         ID = socket.getPort();
     }
     
@@ -39,27 +58,27 @@ public class ChatServerThread extends Thread {
         
         System.out.println(C_CYAN + "Added client " + userName + " (" + getUserIP()
                 + ") on thread " + ID + C_RST);
-        server.broadcast(userName, ID, "/newUser");
+        server.broadcast(userName, color, ID, "/newUser");
         
         while (true) {
             try {
-                server.broadcast(userName, ID, dis.readUTF() );
+                server.broadcast(userName, color, ID, dis.readUTF() );
                 
             } catch (IOException ex) {
                 System.out.println(C_RED + "Client " + getUserName() + " closed the window." + C_RST);
-                server.broadcast(userName, ID, "/forcedFin");
+                server.broadcast(userName, color, ID, "/forcedFin");
             }
         }
     }
     
-    public void sendMsg(String type, String user, String msg) {
+    public void sendMsg(String type, String user, String color, String msg) {
         try {
-            Object obj = new Object(type, user, msg);
+            Object obj = new Object(type, user, color, msg);
             oos.writeObject(obj);
             oos.flush();
             
         } catch (IOException ex) {
-            server.broadcast(userName, ID, "/forcedFin");
+            server.broadcast(userName, color, ID, "/forcedFin");
         }
     }
     private void readUserName(){
@@ -68,7 +87,7 @@ public class ChatServerThread extends Thread {
             userName = dis.readUTF();
             
         } catch (IOException ex) {
-            System.out.println("ERROR reading userName:\n" + ex);
+            System.out.println("ERROR reading userName: " + ex);
         }
     }
     
@@ -88,11 +107,15 @@ public class ChatServerThread extends Thread {
         
         if(newUser){
             f.addToList(userName + "\n");
-            sendMsg("INFO", userName, "Welcome to UMessenger, new user " + userName + "!");
+            sendMsg("INFO", userName, color, "Welcome to UMessenger, new user " + userName + "!");
+            sendMsg("INFO", userName, color, 
+                    "_________________________________________________________________________");
         }
             
         else{
-            sendMsg("INFO", userName, "Welcome back, " + userName + "!");
+            sendMsg("INFO", userName, color, "Welcome back, " + userName + "!");
+            sendMsg("INFO", userName, color, 
+                    "_________________________________________________________________________");
         }
     }
     public int getID() {
@@ -103,6 +126,9 @@ public class ChatServerThread extends Thread {
     }
     public String getUserIP(){
         return socket.getInetAddress().getHostAddress();
+    }
+    public String getUserColor(){
+        return color;
     }
     public void openStreams() throws IOException {
         dis = new DataInputStream(new BufferedInputStream(socket.getInputStream() ) );

@@ -1,3 +1,20 @@
+/* 
+ * Copyright (C) 2016 Ismael Estalayo Mena
+                        http://github.com/ismaelestalayo
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package uMessenger;
 
 import fileTransfer.*;
@@ -71,14 +88,14 @@ public final class ChatClient implements Runnable{
                 + " \\___/\\_|  |_/\\___||___/___/\\___|_| |_|\\__, |\\___|_|   \n"
                 + "                                        __/ |          \n"
                 + "                                       |___/           \n"
-                + "Welcome to UMessenger Beta 1.1 (by Ismael Estalayo).\n"
+                + "Welcome to UMessenger Beta 1.2 (by Ismael Estalayo).\n"
                 + "\n"
                 + "This is a small messenger-like app made with Sockets in Java designed to\n"
                 + "run in the command line and on the same LAN (or using NAT on a server). \n"
                 + "Use " + C_YELLOW+"/help"+C_GREEN+" for available commands and "
                 + C_YELLOW+"/fin"+C_GREEN+" for ending the session.\n"
                 + "\n"
-                + "Full info and suggestions at www.GitHub.com/IsmaelEstalayo\n";
+                + "Full info and suggestions at www.github.com/IsmaelEstalayo\n";
     }
     
     public void start() throws IOException {
@@ -108,13 +125,14 @@ public final class ChatClient implements Runnable{
         
         String type = obj.getType();
         String user = obj.getUser();
+        String color = obj.getColor();
         String msg = obj.getMsg();
         
         switch (type) {
             case "CHAT":
                 //Only print the messages from others
                 if(!user.equals(userName) ){
-                    System.out.print(C_CYAN + user + ": " + C_RST);
+                    System.out.print(color + user + ": " + C_RST);
                     System.out.println(msg);
                 }
                 else{

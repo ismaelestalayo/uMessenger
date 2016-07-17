@@ -10,11 +10,11 @@ public class Object implements Serializable{
     private String msg;
     private String color;
     
-    public Object(String type, String color, String user, String msg){
+    public Object(String type, String user, String color, String msg){
         this.type = type;
-        this.color = color;
         this.user = user;
         this.msg = msg;
+        this.color = color;
     }
 
     public String getType(){
