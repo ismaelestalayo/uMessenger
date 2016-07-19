@@ -16,6 +16,7 @@ If you wanna try it yourself you can either:
 
 #Changelog:
 ####1.3:
+- One of the lates beta version, as the app is quite stable
 - Added a color for each username up to 6 users (then colors will be repeated, because of limits of the cmd).
 - Fixed a problem with file sending.
 
