@@ -19,6 +19,7 @@ If you wanna try it yourself you can either:
 - One of the lates beta version, as the app is quite stable
 - Added a color for each username up to 6 users (then colors will be repeated, because of limits of the cmd).
 - Fixed a problem with file sending.
+- Fixed the color array.
 
 ####1.2:
 - Notification to all users when a new user joins.
