@@ -43,7 +43,7 @@ If you wanna try it yourself you can either:
 - ~~Ability to send files~~
 - ~~Ability to send files between different LANs~~
 - Save logs from the server
-- (More) Commands
+- (More) commands
 
 #Suggest anything at:
 
