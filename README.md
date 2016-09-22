@@ -1,5 +1,13 @@
 # uMessenger - Beta 1.3
 
+:warning:
+
+On Windows 10 Anniversary Update, Microsoft updated the command prompt, adding a lot of functionality, but taking out the ability to print colors. However they have implemented it back and it's right now on the Windows insider program only. I will update this program to make it compatible once they launch it for public. [Source](https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/6509361-provides-support-for-ansi-colors-like-in-bash) 
+
+>"We’re excited to announce that we delivered 24-bit RGP true-color support in Windows Console in Windows 10 Insiders build #14931."
+
+:warning:
+
 Small Messenger-like application designed to run from the command line, and works on the same LAN only (unless using NAT on the server side with a Raspberry for example). **It's important to have userList.txt on the directory where the server is.**
 
 If you wanna try it yourself you can either:
@@ -38,12 +46,12 @@ If you wanna try it yourself you can either:
 - Added `/IPs` and `/users` commands.
 
 #Future plans:
-
-- ~~Usernames~~ with password
-- ~~Ability to send files~~
-- ~~Ability to send files between different LANs~~
-- Save logs from the server
-- (More) commands
+- [X] Usernames
+- [ ] Passwords for usernames.
+- [X] Ability to send files
+- [X] Ability to send files between different LANs
+- [ ] Save logs from the server
+- [ ] More commands
 
 #Suggest anything at:
 
